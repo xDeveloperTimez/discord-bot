@@ -1,0 +1,17 @@
+{
+    "enabled": true,
+    "join_threshold": 3,
+    "join_timeframe": 60,
+    "message_threshold": 20,
+    "channel_create_threshold": 5,
+    "role_create_threshold": 3,
+    "auto_lockdown": true,
+    "auto_ban_raiders": true,
+    "delete_raid_channels": true,
+    "delete_raid_roles": true,
+    "log_channel": null,
+    "admin_role": "Administrator",
+    "trusted_role": "Trusted",
+    "lockdown_duration": 300,
+    "sensitivity": "medium"
+}

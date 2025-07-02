@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardian Bot - Custom Bot Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c1318 0%, #1a2332 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(23, 162, 184, 0.6);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+            will-change: transform;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            25% { transform: translateY(-20px) rotate(90deg); opacity: 0.8; }
+            50% { transform: translateY(-40px) rotate(180deg); opacity: 1; }
+            75% { transform: translateY(-20px) rotate(270deg); opacity: 0.8; }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 20px 0;
+            background: rgba(26, 35, 50, 0.9);
+            border-bottom: 2px solid #17a2b8;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #17a2b8;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #17a2b8, #20c997);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(23, 162, 184, 0.1);
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(23, 162, 184, 0.3);
+        }
+
+        /* Main Content */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #17a2b8, #6f42c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dashboard-header p {
+            font-size: 1.1rem;
+            color: #b8c6db;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background: rgba(26, 35, 50, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(23, 162, 184, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            border-color: #17a2b8;
+            box-shadow: 0 10px 30px rgba(23, 162, 184, 0.3);
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #17a2b8, #20c997);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #17a2b8, #20c997);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #b8c6db;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(23, 162, 184, 0.1);
+            border: 1px solid rgba(23, 162, 184, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.2);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(23, 162, 184, 0.1);
+            border: 1px solid rgba(23, 162, 184, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(23, 162, 184, 0.1);
+            border: 1px solid rgba(23, 162, 184, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: #17a2b8;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #17a2b8, #20c997);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #495057);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        /* Status indicators */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-online {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .status-offline {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Bot preview */
+        .bot-preview {
+            background: rgba(23, 162, 184, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(23, 162, 184, 0.3);
+        }
+
+        .bot-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .bot-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #17a2b8, #20c997);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .bot-details h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .bot-details p {
+            color: #b8c6db;
+            font-size: 0.9rem;
+        }
+
+        /* Feature toggles */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .feature-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(23, 162, 184, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(23, 162, 184, 0.3);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #495057;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #17a2b8;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(26px);
+        }
+
+        /* Loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #17a2b8;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-header h2 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+        }
+
+        /* Success/Error messages */
+        .message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .message-success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .message-error {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .message-info {
+            background: rgba(23, 162, 184, 0.2);
+            color: #17a2b8;
+            border: 1px solid rgba(23, 162, 184, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="attached_assets/2ad89533d1e10de14eddb23915172741_1751336541410.gif" alt="Guardian Bot">
+                <h1>Guardian Bot Dashboard</h1>
+            </div>
+            <div class="user-info">
+                <span id="username">Loading...</span>
+                <div class="status-indicator status-online">
+                    <div class="status-dot"></div>
+                    <span>Connected</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="dashboard-header">
+            <h2>Custom Bot Management</h2>
+            <p>Configure and manage your personalized Discord bot settings. Changes apply only to your bot instance.</p>
+        </div>
+
+        <!-- Messages -->
+        <div id="messages"></div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Bot Status Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">🤖</div>
+                    <h3 class="card-title">Bot Status</h3>
+                </div>
+                <div class="bot-preview">
+                    <div class="bot-info">
+                        <div class="bot-avatar" id="botAvatar">GB</div>
+                        <div class="bot-details">
+                            <h4 id="botName">Loading...</h4>
+                            <p id="botDeploymentId">Deployment ID: ...</p>
+                        </div>
+                    </div>
+                    <div class="status-indicator" id="botStatus">
+                        <div class="status-dot"></div>
+                        <span>Checking status...</span>
+                    </div>
+                </div>
+                <button class="btn" onclick="restartBot()">Restart Bot</button>
+                <button class="btn btn-secondary" onclick="viewLogs()" style="margin-left: 10px;">View Logs</button>
+            </div>
+
+            <!-- Basic Settings Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">⚙️</div>
+                    <h3 class="card-title">Basic Settings</h3>
+                </div>
+                <form id="basicSettingsForm">
+                    <div class="form-group">
+                        <label class="form-label" for="botPrefix">Command Prefix</label>
+                        <input type="text" id="botPrefix" class="form-input" placeholder="." maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="botActivity">Bot Activity</label>
+                        <input type="text" id="botActivity" class="form-input" placeholder="Watching your server">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="botStatus">Bot Status</label>
+                        <select id="botStatusSelect" class="form-select">
+                            <option value="online">Online</option>
+                            <option value="idle">Idle</option>
+                            <option value="dnd">Do Not Disturb</option>
+                            <option value="invisible">Invisible</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Save Changes</button>
+                </form>
+            </div>
+
+            <!-- Moderation Settings Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">🛡️</div>
+                    <h3 class="card-title">Moderation Settings</h3>
+                </div>
+                <form id="moderationSettingsForm">
+                    <div class="form-group">
+                        <label class="form-label" for="logChannel">Log Channel ID</label>
+                        <input type="text" id="logChannel" class="form-input" placeholder="Channel ID for moderation logs">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="muteRole">Mute Role Name</label>
+                        <input type="text" id="muteRole" class="form-input" placeholder="Muted" value="Muted">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Auto-Moderation Features</label>
+                        <div class="feature-grid">
+                            <div class="feature-toggle">
+                                <span>Spam Detection</span>
+                                <div class="toggle-switch active" onclick="toggleFeature(this)">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                            <div class="feature-toggle">
+                                <span>Link Filtering</span>
+                                <div class="toggle-switch" onclick="toggleFeature(this)">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                            <div class="feature-toggle">
+                                <span>Caps Lock Filter</span>
+                                <div class="toggle-switch" onclick="toggleFeature(this)">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                            <div class="feature-toggle">
+                                <span>Profanity Filter</span>
+                                <div class="toggle-switch active" onclick="toggleFeature(this)">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Update Moderation</button>
+                </form>
+            </div>
+
+            <!-- Welcome Messages Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">👋</div>
+                    <h3 class="card-title">Welcome Messages</h3>
+                </div>
+                <form id="welcomeSettingsForm">
+                    <div class="form-group">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="enableWelcome" class="checkbox">
+                            <label for="enableWelcome">Enable Welcome Messages</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="welcomeChannel">Welcome Channel ID</label>
+                        <input type="text" id="welcomeChannel" class="form-input" placeholder="Channel ID for welcome messages">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="welcomeMessage">Welcome Message</label>
+                        <textarea id="welcomeMessage" class="form-textarea" placeholder="Welcome {user} to {server}! Enjoy your stay."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="enableLeave" class="checkbox">
+                            <label for="enableLeave">Enable Leave Messages</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="leaveMessage">Leave Message</label>
+                        <textarea id="leaveMessage" class="form-textarea" placeholder="{user} has left the server. Goodbye!"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Save Welcome Settings</button>
+                </form>
+            </div>
+
+            <!-- Auto Roles Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">🎭</div>
+                    <h3 class="card-title">Auto Roles</h3>
+                </div>
+                <form id="autoRolesForm">
+                    <div class="form-group">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="enableAutoRoles" class="checkbox">
+                            <label for="enableAutoRoles">Enable Auto Roles</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="memberRole">Member Role ID</label>
+                        <input type="text" id="memberRole" class="form-input" placeholder="Role ID to assign to new members">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="botRole">Bot Role ID</label>
+                        <input type="text" id="botRole" class="form-input" placeholder="Role ID to assign to new bots">
+                    </div>
+                    <button type="submit" class="btn">Update Auto Roles</button>
+                </form>
+            </div>
+
+            <!-- Custom Commands Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon">💬</div>
+                    <h3 class="card-title">Custom Commands</h3>
+                </div>
+                <div id="customCommands">
+                    <div class="form-group">
+                        <label class="form-label">Add Custom Command</label>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="text" id="commandTrigger" class="form-input" placeholder="!hello" style="flex: 1;">
+                            <input type="text" id="commandResponse" class="form-input" placeholder="Hello there!" style="flex: 2;">
+                            <button type="button" class="btn" onclick="addCustomCommand()">Add</button>
+                        </div>
+                    </div>
+                    <div id="commandsList">
+                        <!-- Custom commands will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 10; // Reduced for better performance
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (8 + Math.random() * 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize dashboard
+        async function initDashboard() {
+            try {
+                // Get user deployment ID from URL or localStorage
+                const urlParams = new URLSearchParams(window.location.search);
+                const deploymentId = urlParams.get('id') || localStorage.getItem('deploymentId');
+                
+                if (!deploymentId) {
+                    showMessage('Please provide a valid deployment ID.', 'error');
+                    return;
+                }
+
+                // Load bot info
+                await loadBotInfo(deploymentId);
+                
+                // Load current settings
+                await loadSettings(deploymentId);
+                
+                showMessage('Dashboard loaded successfully!', 'success');
+            } catch (error) {
+                console.error('Dashboard initialization error:', error);
+                showMessage('Failed to load dashboard. Please try again.', 'error');
+            }
+        }
+
+        // Load bot information
+        async function loadBotInfo(deploymentId) {
+            // Simulate API call - replace with actual endpoint
+            const botInfo = {
+                name: 'CustomBot-' + deploymentId.slice(-4),
+                deploymentId: deploymentId,
+                status: 'online',
+                username: 'Customer#1234'
+            };
+
+            document.getElementById('botName').textContent = botInfo.name;
+            document.getElementById('botDeploymentId').textContent = 'Deployment ID: ' + botInfo.deploymentId;
+            document.getElementById('botAvatar').textContent = botInfo.name.slice(0, 2).toUpperCase();
+            document.getElementById('username').textContent = botInfo.username;
+            
+            updateBotStatus(botInfo.status);
+        }
+
+        // Update bot status display
+        function updateBotStatus(status) {
+            const statusElement = document.getElementById('botStatus');
+            statusElement.className = 'status-indicator status-' + status;
+            statusElement.innerHTML = `
+                <div class="status-dot"></div>
+                <span>${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+            `;
+        }
+
+        // Load current settings
+        async function loadSettings(deploymentId) {
+            // Simulate loading current settings - replace with actual API calls
+            const settings = {
+                prefix: '.',
+                activity: 'Watching your server',
+                status: 'online',
+                logChannel: '',
+                muteRole: 'Muted',
+                welcomeEnabled: false,
+                welcomeChannel: '',
+                welcomeMessage: 'Welcome {user} to {server}! Enjoy your stay.',
+                leaveEnabled: false,
+                leaveMessage: '{user} has left the server. Goodbye!',
+                autoRolesEnabled: false,
+                memberRole: '',
+                botRole: ''
+            };
+
+            // Populate form fields
+            document.getElementById('botPrefix').value = settings.prefix;
+            document.getElementById('botActivity').value = settings.activity;
+            document.getElementById('botStatusSelect').value = settings.status;
+            document.getElementById('logChannel').value = settings.logChannel;
+            document.getElementById('muteRole').value = settings.muteRole;
+            document.getElementById('enableWelcome').checked = settings.welcomeEnabled;
+            document.getElementById('welcomeChannel').value = settings.welcomeChannel;
+            document.getElementById('welcomeMessage').value = settings.welcomeMessage;
+            document.getElementById('enableLeave').checked = settings.leaveEnabled;
+            document.getElementById('leaveMessage').value = settings.leaveMessage;
+            document.getElementById('enableAutoRoles').checked = settings.autoRolesEnabled;
+            document.getElementById('memberRole').value = settings.memberRole;
+            document.getElementById('botRole').value = settings.botRole;
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            const messagesContainer = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.className = `message message-${type}`;
+            messageElement.textContent = message;
+            
+            messagesContainer.appendChild(messageElement);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                messageElement.remove();
+            }, 5000);
+        }
+
+        // Toggle feature switches
+        function toggleFeature(element) {
+            element.classList.toggle('active');
+        }
+
+        // Form handlers
+        document.getElementById('basicSettingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const settings = Object.fromEntries(formData);
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                showMessage('Basic settings updated successfully!', 'success');
+            } catch (error) {
+                showMessage('Failed to update settings.', 'error');
+            }
+        });
+
+        document.getElementById('moderationSettingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                showMessage('Moderation settings updated successfully!', 'success');
+            } catch (error) {
+                showMessage('Failed to update moderation settings.', 'error');
+            }
+        });
+
+        document.getElementById('welcomeSettingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                showMessage('Welcome settings updated successfully!', 'success');
+            } catch (error) {
+                showMessage('Failed to update welcome settings.', 'error');
+            }
+        });
+
+        document.getElementById('autoRolesForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                showMessage('Auto roles updated successfully!', 'success');
+            } catch (error) {
+                showMessage('Failed to update auto roles.', 'error');
+            }
+        });
+
+        // Bot management functions
+        async function restartBot() {
+            try {
+                updateBotStatus('offline');
+                showMessage('Restarting bot...', 'info');
+                
+                // Simulate restart process
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                updateBotStatus('online');
+                showMessage('Bot restarted successfully!', 'success');
+            } catch (error) {
+                showMessage('Failed to restart bot.', 'error');
+            }
+        }
+
+        function viewLogs() {
+            showMessage('Opening bot logs in new window...', 'info');
+            // Open logs in new window/modal
+        }
+
+        // Custom commands management
+        function addCustomCommand() {
+            const trigger = document.getElementById('commandTrigger').value.trim();
+            const response = document.getElementById('commandResponse').value.trim();
+            
+            if (!trigger || !response) {
+                showMessage('Please fill in both trigger and response.', 'error');
+                return;
+            }
+            
+            // Add command to list
+            const commandsList = document.getElementById('commandsList');
+            const commandElement = document.createElement('div');
+            commandElement.className = 'form-group';
+            commandElement.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(23, 162, 184, 0.1); border-radius: 5px;">
+                    <div>
+                        <strong>${trigger}</strong> → ${response}
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="this.parentElement.parentElement.remove()" style="padding: 5px 10px;">Remove</button>
+                </div>
+            `;
+            
+            commandsList.appendChild(commandElement);
+            
+            // Clear inputs
+            document.getElementById('commandTrigger').value = '';
+            document.getElementById('commandResponse').value = '';
+            
+            showMessage('Custom command added!', 'success');
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            initDashboard();
+        });
+    </script>
+</body>
+</html>

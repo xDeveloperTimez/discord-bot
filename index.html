@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guardian Discord Bot - Status</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #2c2f36; 
+            color: #fff; 
+            margin: 0; 
+            padding: 20px; 
+            text-align: center; 
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: #36393f; 
+            padding: 30px; 
+            border-radius: 10px; 
+        }
+        .status { 
+            color: #43b581; 
+            font-size: 24px; 
+            margin: 20px 0; 
+        }
+        .endpoint { 
+            background: #40444b; 
+            padding: 10px; 
+            border-radius: 5px; 
+            margin: 10px 0; 
+            font-family: monospace; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Guardian Discord Bot</h1>
+        <div class="status">✅ Online and Operational</div>
+        
+        <h3>Available Endpoints:</h3>
+        <div class="endpoint">/ping - Simple health check</div>
+        <div class="endpoint">/health - Detailed status</div>
+        <div class="endpoint">/status - Bot information</div>
+        <div class="endpoint"><a href="/purchase" style="color: #ffd700; text-decoration: none;">/purchase - License Portal</a></div>
+        
+        <p>This server hosts three Discord bots:</p>
+        <ul>
+            <li><strong>Guardian Bot</strong> - 79 moderation commands</li>
+            <li><strong>Purchase Bot</strong> - Commercial licensing system</li>
+            <li><strong>Excel Help Bot</strong> - Educational AI assistant</li>
+        </ul>
+        
+        <p>Monitoring via UptimeRobot for 24/7 uptime</p>
+    </div>
+    
+    <script>
+        // Auto-refresh every 30 seconds to keep connection alive
+        setTimeout(() => window.location.reload(), 30000);
+    </script>
+</body>
+</html>

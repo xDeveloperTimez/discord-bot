@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardian Bot - Purchase License</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #17a2b8 0%, #20c997 25%, #6f42c1 75%, #e91e63 100%);
+            min-height: 100vh;
+            color: #fff;
+            position: relative;
+            overflow-x: hidden;
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+        
+        /* Optimized animated background with cyan/teal theme */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(23, 162, 184, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(32, 201, 151, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(111, 66, 193, 0.25) 0%, transparent 45%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+            will-change: transform;
+            transform: translateZ(0);
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 60% 10%, rgba(233, 30, 99, 0.15) 0%, transparent 35%),
+                radial-gradient(circle at 30% 90%, rgba(111, 66, 193, 0.2) 0%, transparent 40%);
+            animation: float-reverse 25s ease-in-out infinite;
+            z-index: -1;
+            will-change: transform;
+            transform: translateZ(0);
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            33% {
+                transform: translateY(-30px) rotate(120deg) scale(1.1);
+                opacity: 0.7;
+            }
+            66% {
+                transform: translateY(-15px) rotate(240deg) scale(0.9);
+                opacity: 0.9;
+            }
+        }
+        
+        @keyframes float-reverse {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(25px) rotate(-180deg) scale(1.2);
+                opacity: 0.6;
+            }
+        }
+        
+        /* Optimized floating particles with cyan/teal theme */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            animation: particle-float 15s infinite linear;
+            z-index: -1;
+            will-change: transform;
+            transform: translateZ(0);
+        }
+        
+        .particle:nth-child(odd) {
+            width: 5px;
+            height: 5px;
+            background: rgba(23, 162, 184, 0.6);
+            animation-duration: 18s;
+        }
+        
+        .particle:nth-child(even) {
+            width: 8px;
+            height: 8px;
+            background: rgba(32, 201, 151, 0.5);
+            animation-duration: 22s;
+        }
+        
+        .particle:nth-child(3n) {
+            width: 6px;
+            height: 6px;
+            background: rgba(111, 66, 193, 0.5);
+            animation-duration: 20s;
+        }
+        
+        .particle:nth-child(4n) {
+            width: 7px;
+            height: 7px;
+            background: rgba(233, 30, 99, 0.4);
+            animation-duration: 16s;
+        }
+        
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) translateX(15px) rotate(45deg) scale(0.5);
+            }
+            25% {
+                transform: translateY(75vh) translateX(-20px) rotate(90deg) scale(1);
+            }
+            50% {
+                transform: translateY(50vh) translateX(25px) rotate(180deg) scale(1.3);
+            }
+            75% {
+                transform: translateY(25vh) translateX(-15px) rotate(270deg) scale(1.1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) translateX(10px) rotate(315deg) scale(0.8);
+            }
+            100% {
+                transform: translateY(-10vh) translateX(0) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Modern glass-morphism effects */
+        .glass-effect {
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Enhanced landing page styles */
+        .landing-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .landing-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        .landing-page.hidden {
+            display: none;
+        }
+        
+        .main-content {
+            display: none;
+        }
+        
+        .main-content.visible {
+            display: block;
+        }
+        
+        .landing-logo {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        .landing-title {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .landing-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+        
+        .enter-store-btn {
+            padding: 22px 55px;
+            font-size: 1.6rem;
+            background: linear-gradient(45deg, #17a2b8, #20c997, #e91e63);
+            background-size: 200% 200%;
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 
+                0 12px 35px rgba(23, 162, 184, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: gradient-shift 3s ease infinite;
+        }
+        
+        .enter-store-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .enter-store-btn:hover::before {
+            left: 100%;
+        }
+        
+        .enter-store-btn:hover {
+            transform: translateY(-8px) scale(1.08);
+            box-shadow: 
+                0 20px 55px rgba(23, 162, 184, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            background-position: 100% 0;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .features-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+            max-width: 900px;
+        }
+        
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-10px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 0;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .plan-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .plan-card.featured {
+            border: 2px solid #ffd700;
+            transform: scale(1.05);
+        }
+        
+        .plan-card.featured::before {
+            content: "MOST POPULAR";
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: #ffd700;
+            color: #333;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .plan-card.special {
+            border: 2px solid #6f42c1;
+            background: linear-gradient(135deg, rgba(111, 66, 193, 0.1), rgba(233, 30, 99, 0.1));
+        }
+        
+        .plan-card.special::before {
+            content: "CUSTOM SETUP";
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: linear-gradient(45deg, #6f42c1, #e91e63);
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .plan-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+        
+        .plan-description {
+            font-size: 1rem;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+        
+        .price-section {
+            margin-bottom: 30px;
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .duration-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .toggle-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-btn.active {
+            background: #ffd700;
+            color: #333;
+        }
+        
+        .features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .features li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .features li:before {
+            content: "✓";
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .purchase-btn {
+            width: 100%;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .purchase-btn:hover {
+            background: linear-gradient(45deg, #45a049, #4CAF50);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .payment-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 50px;
+            text-align: center;
+        }
+        
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .payment-method {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .support-contact {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #fff;
+        }
+        
+        .close:hover {
+            opacity: 0.7;
+        }
+        
+        .payment-details {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .copy-btn {
+            background: #4CAF50;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 0.8rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .plan-card.featured {
+                transform: none;
+            }
+            
+            .payment-methods {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Optimized floating particles (reduced for performance) -->
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 25%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 45%; animation-delay: 8s;"></div>
+    <div class="particle" style="left: 65%; animation-delay: 12s;"></div>
+    <div class="particle" style="left: 85%; animation-delay: 16s;"></div>
+    <div class="particle" style="left: 35%; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 55%; animation-delay: 6s;"></div>
+    <div class="particle" style="left: 75%; animation-delay: 10s;"></div>
+    <div class="particle" style="left: 15%; animation-delay: 14s;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 18s;"></div>
+
+    <!-- Landing Page -->
+    <div class="landing-page" id="landingPage">
+        <div class="landing-logo">
+            <img src="attached_assets/2ad89533d1e10de14eddb23915172741_1751336541410.gif" alt="Guardian Bot Logo" style="width: 120px; height: 120px; border-radius: 15px; box-shadow: 0 10px 30px rgba(23, 162, 184, 0.4);">
+        </div>
+        <h1 class="landing-title">Guardian Bot</h1>
+        <p class="landing-subtitle">Professional Discord moderation with 79+ commands, anti-raid protection, music player, and advanced automation features. Transform your server into a secure, well-managed community.</p>
+        
+        <button class="enter-store-btn" onclick="enterStore()">
+            Enter Store
+        </button>
+        
+        <div class="features-preview">
+            <div class="feature-item">
+                <h3>🔐 Advanced Security</h3>
+                <p>Anti-raid protection, spam detection, and automated moderation</p>
+            </div>
+            <div class="feature-item">
+                <h3>🎵 Music Player</h3>
+                <p>High-quality music streaming with queue management</p>
+            </div>
+            <div class="feature-item">
+                <h3>⚡ 79+ Commands</h3>
+                <p>Comprehensive toolkit for complete server management</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Store Content -->
+    <div class="main-content" id="mainContent">
+        <div class="container">
+            <div class="header">
+                <h1><img src="/attached_assets/2ad89533d1e10de14eddb23915172741_1751336541410.gif" alt="Guardian Bot" style="width: 40px; height: 40px; vertical-align: middle; margin-right: 10px;">Guardian Bot</h1>
+                <p>Professional Discord moderation with 79+ commands, anti-raid protection, music player, and advanced automation features. Choose your plan and get instant access.</p>
+            </div>
+        
+        <div class="pricing-grid">
+            <!-- Basic Plan -->
+            <div class="plan-card">
+                <h2 class="plan-title">Basic</h2>
+                <p class="plan-description">Essential moderation tools for small communities</p>
+                
+                <div class="duration-toggle">
+                    <button class="toggle-btn active" onclick="toggleDuration(this, 'basic')">Monthly</button>
+                    <button class="toggle-btn" onclick="toggleDuration(this, 'basic')">Yearly</button>
+                </div>
+                
+                <div class="price-section">
+                    <div class="price" id="basic-price">$4.99</div>
+                    <div class="duration" id="basic-duration">per month</div>
+                </div>
+                
+                <ul class="features">
+                    <li>Basic moderation commands</li>
+                    <li>Auto-moderation features</li>
+                    <li>Warning system</li>
+                    <li>Basic logging</li>
+                    <li>Community support</li>
+                </ul>
+                
+                <button class="purchase-btn" onclick="openPurchaseModal('Basic', 'basic')">
+                    Purchase Basic
+                </button>
+            </div>
+            
+            <!-- Premium Plan -->
+            <div class="plan-card featured">
+                <h2 class="plan-title">Premium</h2>
+                <p class="plan-description">Advanced features for growing servers</p>
+                
+                <div class="duration-toggle">
+                    <button class="toggle-btn active" onclick="toggleDuration(this, 'premium')">Monthly</button>
+                    <button class="toggle-btn" onclick="toggleDuration(this, 'premium')">Yearly</button>
+                </div>
+                
+                <div class="price-section">
+                    <div class="price" id="premium-price">$9.99</div>
+                    <div class="duration" id="premium-duration">per month</div>
+                </div>
+                
+                <ul class="features">
+                    <li>All Basic features</li>
+                    <li>Advanced anti-raid protection</li>
+                    <li>Music player with queue</li>
+                    <li>Custom auto-responses</li>
+                    <li>Advanced logging</li>
+                    <li>Priority support</li>
+                </ul>
+                
+                <button class="purchase-btn" onclick="openPurchaseModal('Premium', 'premium')">
+                    Purchase Premium
+                </button>
+            </div>
+            
+            <!-- Exclusive Plan -->
+            <div class="plan-card">
+                <h2 class="plan-title">Exclusive</h2>
+                <p class="plan-description">Ultimate power user experience</p>
+                
+                <div class="duration-toggle">
+                    <button class="toggle-btn active" onclick="toggleDuration(this, 'exclusive')">Monthly</button>
+                    <button class="toggle-btn" onclick="toggleDuration(this, 'exclusive')">Lifetime</button>
+                </div>
+                
+                <div class="price-section">
+                    <div class="price" id="exclusive-price">$19.99</div>
+                    <div class="duration" id="exclusive-duration">per month</div>
+                </div>
+                
+                <ul class="features">
+                    <li>All Premium features</li>
+                    <li>Server cloning tools</li>
+                    <li>Advanced spam tools</li>
+                    <li>Selfbot-style features</li>
+                    <li>Custom development</li>
+                    <li>Dedicated support</li>
+                </ul>
+                
+                <button class="purchase-btn" onclick="openPurchaseModal('Exclusive', 'exclusive')">
+                    Purchase Exclusive
+                </button>
+            </div>
+            
+            <!-- Custom Bot Plan -->
+            <div class="plan-card special">
+                <h2 class="plan-title">Custom Bot</h2>
+                <p class="plan-description">Your own personalized Discord bot</p>
+                
+                <div class="price-section">
+                    <div class="price">$50.00</div>
+                    <div class="duration">one-time setup</div>
+                </div>
+                
+                <ul class="features">
+                    <li>Your own bot application</li>
+                    <li>All Guardian features included</li>
+                    <li>Custom branding & name</li>
+                    <li>Private hosting setup</li>
+                    <li>Full source code provided</li>
+                    <li>Personal setup assistance</li>
+                </ul>
+                
+                <button class="purchase-btn" onclick="openPurchaseModal('Custom Bot', 'custom')">
+                    Order Custom Bot
+                </button>
+            </div>
+        </div>
+        
+        <div class="payment-info">
+            <h2>Secure Payment Methods</h2>
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <strong>🔗 Bitcoin (BTC)</strong><br>
+                    Instant activation
+                </div>
+                <div class="payment-method">
+                    <strong>💳 PayPal</strong><br>
+                    Quick & secure
+                </div>
+            </div>
+            
+            <div class="support-contact">
+                <h3>Need Help?</h3>
+                <p>Join our Discord server for support: <strong>https://discord.gg/FQvU3DAgCk</strong></p>
+                <p>All purchases are processed securely and licenses are activated instantly.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Purchase Modal -->
+    <div id="purchaseModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePurchaseModal()">&times;</span>
+            <h2>Purchase <span id="modal-plan-name"></span></h2>
+            <div id="modal-price-info"></div>
+            
+            <div class="payment-details">
+                <h3>Choose Payment Method:</h3>
+                
+                <div style="margin: 20px 0;">
+                    <button class="purchase-btn" style="margin: 10px 0;" onclick="showBitcoinPayment()">
+                        Pay with Bitcoin (BTC)
+                    </button>
+                    <button class="purchase-btn" style="margin: 10px 0;" onclick="showPayPalPayment()">
+                        Pay with PayPal
+                    </button>
+                </div>
+                
+                <div id="bitcoin-details" style="display: none;">
+                    <h4>Bitcoin Payment:</h4>
+                    <p><strong>Address:</strong> bc1qa29gd8cec3n8cndl8ge9nf3p6wks9ddqqcww6s 
+                        <button class="copy-btn" onclick="copyToClipboard('bc1qa29gd8cec3n8cndl8ge9nf3p6wks9ddqqcww6s')">Copy</button>
+                    </p>
+                    <p><strong>Amount:</strong> <span id="btc-amount"></span></p>
+                    <p style="font-size: 0.9rem; margin-top: 15px;">
+                        Send the exact amount to the address above, then contact support with your transaction ID for instant activation.
+                    </p>
+                </div>
+                
+                <div id="paypal-details" style="display: none;">
+                    <h4>PayPal Payment:</h4>
+                    <p><strong>Email:</strong> lanagotcake@gmail.com 
+                        <button class="copy-btn" onclick="copyToClipboard('lanagotcake@gmail.com')">Copy</button>
+                    </p>
+                    <p><strong>Amount:</strong> <span id="paypal-amount"></span></p>
+                    <p style="font-size: 0.9rem; margin-top: 15px;">
+                        Send payment as Friends & Family to avoid fees. Include your Discord username in the note for faster processing.
+                    </p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <p><strong>After Payment:</strong></p>
+                <p>1. Join our Discord: https://discord.gg/FQvU3DAgCk</p>
+                <p>2. Use /ticket command to create a support ticket</p>
+                <p>3. Provide your payment proof for instant activation</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Landing page functionality
+        function enterStore() {
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('mainContent').classList.add('visible');
+        }
+        // Pricing data
+        const pricing = {
+            basic: {
+                monthly: { price: '$4.99', amount: 4.99 },
+                yearly: { price: '$29.99', amount: 29.99 }
+            },
+            premium: {
+                monthly: { price: '$9.99', amount: 9.99 },
+                yearly: { price: '$59.99', amount: 59.99 }
+            },
+            exclusive: {
+                monthly: { price: '$19.99', amount: 19.99 },
+                lifetime: { price: '$99.99', amount: 99.99 }
+            },
+            custom: {
+                setup: { price: '$50.00', amount: 50.00 }
+            }
+        };
+        
+        function toggleDuration(btn, plan) {
+            // Toggle active state
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Update pricing
+            const isSecondOption = btn.textContent.toLowerCase() !== 'monthly';
+            const duration = plan === 'exclusive' ? (isSecondOption ? 'lifetime' : 'monthly') : (isSecondOption ? 'yearly' : 'monthly');
+            
+            document.getElementById(`${plan}-price`).textContent = pricing[plan][duration].price;
+            document.getElementById(`${plan}-duration`).textContent = duration === 'lifetime' ? 'one-time' : `per ${duration.replace('ly', '')}`;
+        }
+        
+        let currentPlan = '';
+        let currentDuration = '';
+        let currentAmount = 0;
+        
+        function openPurchaseModal(planName, planId) {
+            currentPlan = planName;
+            
+            if (planId === 'custom') {
+                // Custom Bot has fixed pricing
+                currentDuration = 'setup';
+                currentAmount = pricing[planId][currentDuration].amount;
+                
+                document.getElementById('modal-plan-name').textContent = planName;
+                document.getElementById('modal-price-info').innerHTML = `
+                    <h3>${pricing[planId][currentDuration].price} one-time setup</h3>
+                    <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">
+                        Includes personal bot setup, all features, custom branding, and full support.
+                        Our team will contact you within 24 hours after payment confirmation.
+                    </p>
+                `;
+            } else {
+                // Get current duration for other plans
+                const activeBtn = document.querySelector(`#${planId}-price`).closest('.plan-card').querySelector('.toggle-btn.active');
+                const isSecondOption = activeBtn.textContent.toLowerCase() !== 'monthly';
+                currentDuration = planId === 'exclusive' ? (isSecondOption ? 'lifetime' : 'monthly') : (isSecondOption ? 'yearly' : 'monthly');
+                currentAmount = pricing[planId][currentDuration].amount;
+                
+                document.getElementById('modal-plan-name').textContent = planName;
+                document.getElementById('modal-price-info').innerHTML = `
+                    <h3>${pricing[planId][currentDuration].price} ${currentDuration === 'lifetime' ? 'one-time' : 'per ' + currentDuration.replace('ly', '')}</h3>
+                `;
+            }
+            
+            document.getElementById('purchaseModal').style.display = 'block';
+        }
+        
+        function closePurchaseModal() {
+            document.getElementById('purchaseModal').style.display = 'none';
+            document.getElementById('bitcoin-details').style.display = 'none';
+            document.getElementById('paypal-details').style.display = 'none';
+        }
+        
+        function showBitcoinPayment() {
+            document.getElementById('bitcoin-details').style.display = 'block';
+            document.getElementById('paypal-details').style.display = 'none';
+            document.getElementById('btc-amount').textContent = `$${currentAmount} USD equivalent in BTC`;
+        }
+        
+        function showPayPalPayment() {
+            document.getElementById('paypal-details').style.display = 'block';
+            document.getElementById('bitcoin-details').style.display = 'none';
+            document.getElementById('paypal-amount').textContent = `$${currentAmount} USD`;
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Copied to clipboard!');
+            });
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('purchaseModal');
+            if (event.target === modal) {
+                closePurchaseModal();
+            }
+        }
+    </script>
+</body>
+</html>

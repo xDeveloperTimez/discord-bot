@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Authentication - Guardian Bot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c1318 0%, #1a2332 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(26, 35, 50, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid #17a2b8;
+            max-width: 500px;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 2px solid #17a2b8;
+        }
+        
+        h1 {
+            color: #17a2b8;
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid;
+        }
+        
+        .success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border-color: rgba(40, 167, 69, 0.3);
+        }
+        
+        .error {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border-color: rgba(220, 53, 69, 0.3);
+        }
+        
+        .loading {
+            background: rgba(23, 162, 184, 0.2);
+            color: #17a2b8;
+            border-color: rgba(23, 162, 184, 0.3);
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #17a2b8;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="attached_assets/2ad89533d1e10de14eddb23915172741_1751336541410.gif" alt="Guardian Bot" class="logo">
+        <h1>Discord Authentication</h1>
+        <div id="status" class="message loading">
+            <div class="spinner"></div>
+            Authenticating with Discord...
+        </div>
+    </div>
+
+    <script>
+        async function handleOAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+            
+            const statusDiv = document.getElementById('status');
+            
+            if (error) {
+                statusDiv.className = 'message error';
+                statusDiv.innerHTML = `Authentication failed: ${error}`;
+                setTimeout(() => window.close(), 3000);
+                return;
+            }
+            
+            if (!code) {
+                statusDiv.className = 'message error';
+                statusDiv.innerHTML = 'No authorization code received';
+                setTimeout(() => window.close(), 3000);
+                return;
+            }
+            
+            // Verify state to prevent CSRF attacks
+            const storedState = window.opener?.sessionStorage.getItem('oauth_state');
+            if (state !== storedState) {
+                statusDiv.className = 'message error';
+                statusDiv.innerHTML = 'Invalid state parameter - possible security issue';
+                setTimeout(() => window.close(), 3000);
+                return;
+            }
+            
+            try {
+                // Exchange code for access token
+                const response = await fetch('/auth/discord/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        redirect_uri: window.location.origin + '/auth/discord/callback'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store access token in opener window
+                    if (window.opener) {
+                        window.opener.sessionStorage.setItem('discord_access_token', data.access_token);
+                        window.opener.sessionStorage.setItem('discord_user_id', data.user_id);
+                    }
+                    
+                    statusDiv.className = 'message success';
+                    statusDiv.innerHTML = 'Authentication successful! Closing window...';
+                    
+                    setTimeout(() => {
+                        window.close();
+                    }, 1500);
+                } else {
+                    console.error('OAuth Error Response:', data);
+                    statusDiv.className = 'message error';
+                    statusDiv.innerHTML = `Authentication failed: ${data.error || 'Unknown error'}`;
+                    
+                    // Show more detailed error info in console
+                    if (data.error) {
+                        console.error('Detailed error:', data.error);
+                    }
+                    
+                    setTimeout(() => window.close(), 5000); // Give more time to read error
+                }
+            } catch (error) {
+                console.error('OAuth error:', error);
+                statusDiv.className = 'message error';
+                statusDiv.innerHTML = 'Failed to complete authentication';
+                setTimeout(() => window.close(), 3000);
+            }
+        }
+        
+        // Start OAuth process when page loads
+        handleOAuthCallback();
+    </script>
+</body>
+</html>
