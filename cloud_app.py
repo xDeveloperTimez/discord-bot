@@ -42,6 +42,7 @@ if __name__ == "__main__":
     bot_thread = threading.Thread(target=start_discord_bots, daemon=True)
     bot_thread.start()
     
-    # Start web server
+    # Start web server (Google Cloud Run provides PORT environment variable)
     port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+    print(f"Starting server on port {port}")
+    app.run(host="0.0.0.0", port=port, debug=False)
